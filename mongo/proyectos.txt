@@ -1,0 +1,126 @@
+
+// crear coleccion llamada proyectos
+
+db.createCollection('proyectos', {
+  validator: {
+    $jsonSchema: {
+      required: ['name', 'generalObjective', 'specificObjectives', 'budget', 'startDate', 'endDate', 'leader_id', 'status'],
+      properties: {
+         name: {
+          bsonType: 'string',
+        },
+        generalObjective: {
+          bsonType: 'string'
+        },
+        specificObjectives: {
+          bsonType: 'array'
+        },
+        budget: {
+          bsonType: 'number'
+        },
+        startDate: {
+          bsonType: 'date'
+        },
+        endDate: {
+          bsonType: 'date'
+        },
+        leader_id: {
+          bsonType: 'objectId'
+        },
+        status: {
+          enum: ['ACTIVE', 'INACTIVE']
+        },
+        phase: {
+          enum: ['STARTED', 'IN PROGRESS', 'ENDED']
+        }
+      }
+    }
+  }
+});
+
+// Insertar varios valores dentro de proyectos
+
+db.getCollection('proyectos').insertMany([{
+    "name": "Project 1",
+    "generalObjective": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent nisl augue, ultrices non placerat maximus, feugiat nec mauris.",
+    "specificObjectives": ["Lorem ipsum dolor sit amet, consectetur adipiscing elit", "Praesent nisl augue, ultrices non placerat maximus, feugiat nec mauris."],
+    "budget": NumberDecimal('20000000'),
+    "startDate": new Date(),
+    "endDate": new Date(new Date().getTime() + 60*24*60*60000),
+    "leader_id": db.usuarios.findOne({email: 'peter.griffin@mail.com'})._id,
+    "status": "INACTIVE",
+  },
+  {
+    "name": "Project 2",
+    "generalObjective": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent nisl augue, ultrices non placerat maximus, feugiat nec mauris.",
+    "specificObjectives": ["Lorem ipsum dolor sit amet, consectetur adipiscing elit", "Praesent nisl augue, ultrices non placerat maximus, feugiat nec mauris."],
+    "budget": NumberDecimal('10000000'),
+    "startDate": new Date(),
+    "endDate": new Date(new Date().getTime() + 60*24*60*60000),
+    "leader_id": db.usuarios.findOne({email: 'walter.white@mail.com'})._id,
+    "status": "INACTIVE",
+  },
+  {
+    "name": "Project 3",
+    "generalObjective": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent nisl augue, ultrices non placerat maximus, feugiat nec mauris.",
+    "specificObjectives": ["Lorem ipsum dolor sit amet, consectetur adipiscing elit", "Praesent nisl augue, ultrices non placerat maximus, feugiat nec mauris."],
+    "budget": NumberDecimal('15000000'),
+    "startDate": new Date(),
+    "endDate": new Date(new Date().getTime() + 60*24*60*60000),
+    "leader_id": db.usuarios.findOne({email: 'john.snow@mail.com'})._id,
+    "status": "INACTIVE",
+  },
+  {
+    "name": "Project 4",
+    "generalObjective": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent nisl augue, ultrices non placerat maximus, feugiat nec mauris.",
+    "specificObjectives": ["Lorem ipsum dolor sit amet, consectetur adipiscing elit", "Praesent nisl augue, ultrices non placerat maximus, feugiat nec mauris."],
+    "budget": NumberDecimal('35000000'),
+    "startDate": new Date(),
+    "endDate": new Date(new Date().getTime() + 60*24*60*60000),
+    "leader_id": db.usuarios.findOne({email: 'john.snow@mail.com'})._id,
+    "status": "INACTIVE",
+  }]);
+
+//insertar un valor dentro proyectos
+db.getCollection('proyectos').insertOne(
+    {
+    "name": "Project 4",
+    "generalObjective": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent nisl augue, ultrices non placerat maximus, feugiat nec mauris.",
+    "specificObjectives": ["Lorem ipsum dolor sit amet, consectetur adipiscing elit", "Praesent nisl augue, ultrices non placerat maximus, feugiat nec mauris."],
+    "budget": NumberDecimal('35000000'),
+    "startDate": new Date(),
+    "endDate": new Date(new Date().getTime() + 60*24*60*60000),
+    "leader_id": db.usuarios.findOne({email: 'john.snow@mail.com'})._id,
+    "status": "inactive",
+  }
+)
+
+//encontrar todas las colecciones de proyectos
+db.getCollection('proyectos').find({})
+
+//encontrar una coleccion en especifico
+db.getCollection('proyectos').find({name:'project 1'})
+
+//actualizar un campo en especifico
+db.proyectos.updateOne(
+   { "name" : "Project 4" },
+   { $set: { status: 'active'} }
+)
+
+//Eliminar un documento
+db.proyectos.deleteOne({"name" : "Project 4" })
+
+//Eliminar varios documentos
+db.proyectos.deleteMany({"status" : "inactive" })
+
+//Eliminar un campo de un documento en especifico
+db.proyectos.update(
+   { "name" : "Project 4" },
+   { $unset: { status: ""} }
+)
+
+//Eliminar el campo en todos los documentos de una colección
+db.productos.updateMany({},{$unset:{stock:""}})
+
+// borrar proyectos
+db.getCollection('proyectos').drop();

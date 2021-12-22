@@ -1,0 +1,102 @@
+// creación de colección avances
+// BD name
+const database = 'proyecto_ciclo4';
+
+// The current database to use.
+use(database);
+
+// users collection
+
+let collection = 'inscripciones';
+
+// Drop users collection
+db.getCollection(collection).drop();
+
+
+db.createCollection(collection, {
+  validator: {
+    $jsonSchema: {
+      required: ['project_id', 'user_id'],
+      properties: {
+        project_id: {
+          bsonType: 'objectId',
+        },
+        user_id: {
+          bsonType: 'objectId'
+        },
+        status: {
+          enum: ['acepted', 'rejected']
+        },
+        enrollmentDate: {
+          bsonType: 'date'
+        },
+        egressDate: {
+          bsonType: 'date'
+        }
+      }
+    }
+  }
+});
+// Create unique index for project_id and user_id
+
+//db.getCollection(collection).createIndex({ project_id: 1, user_id: 1 }, { unique: true, name: '_project_user_' });
+
+const inscripciones = [
+  
+ {
+    "project_id": db.proyectos.findOne({name: 'Project 1'}, {_id: 1})._id,
+    "user_id": db.usuarios.findOne({email: 'peter.griffin@mail.com'}, {_id: 1})._id,
+  },
+  {
+    "project_id": db.proyectos.findOne({name: 'Project 1'}, {_id: 1})._id,
+    "user_id": db.usuarios.findOne({email: 'rick.sanchez@mail.com'})._id
+  },
+  {
+    "project_id": db.proyectos.findOne({name: 'Project 2'}, {_id: 1})._id,
+    "user_id": db.usuarios.findOne({email: 'rick.sanchez@mail.com'})._id
+  },
+  {
+    "project_id": db.proyectos.findOne({name: 'Project 3'}, {_id: 1})._id,
+    "user_id": db.usuarios.findOne({email: 'peter.griffin@mail.com'})._id
+  },
+  {
+    "project_id": db.proyectos.findOne({name: 'Project 4'}, {_id: 1})._id,
+    "user_id": db.usuarios.findOne({email: 'rick.sanchez@mail.com'})._id
+  },
+  
+];
+
+// Insert enrollments
+db.getCollection(collection).insertMany(inscripciones);
+//cosultar
+db.getCollection('inscripciones').find();
+//
+// Ingresar solo un documento 
+
+db.inscripciones.insert({"project_id": db.proyectos.findOne({name: 'Project 2'}, {_id: 1})._id,
+    "user_id": db.usuarios.findOne({email: 'peter.griffin@mail.com'})._id,
+      "status":"acepted",
+    "enrollmentDate":new Date(),
+    "egressDate":new Date()
+})
+
+// eliminar 
+db.inscripciones.deleteOne( { "_id" : ObjectId("61984e97ca19a44135869f06") } );
+ 
+db.inscripciones.deleteMany ( { "project_id" : ObjectId("6195c3e711bf5fe06561129e") } );
+
+// actuliazar 
+
+db.inscripciones.updateOne(
+  
+   {"_id" : ObjectId("61983a3cbee27456a08e47b7")},
+
+      { $set: { status: "rejected"} },
+      
+   
+   
+)
+
+
+
+

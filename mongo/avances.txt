@@ -1,0 +1,74 @@
+// creación de colección avances
+
+db.getCollection('avances').drop();
+db.createCollection('avances',{
+    validator: {
+        $jsonSchema: {
+            required: ['project_id','addDate','description','observations'],
+            properties: {
+                project_id: {
+                    bsonType:'objectId',
+                },
+                addDate: {
+                    bsonType: 'date'
+                },
+                description: {
+                    bsonType: 'string'
+                },
+                observations: {
+                    bsonType: 'string'
+                }
+            }
+        }
+    }
+});
+
+//Insertar varios avances
+
+db.getCollection('avances').insertMany([
+{
+    "project_id": db.proyectos.findOne({name: 'Project 1'},{_id:1})._id,
+    "addDate": new Date(),
+    "description": '.......',
+    "observations": '..........',
+},
+{
+    "project_id": db.proyectos.findOne({name: 'Project 2'},{_id:2})._id,
+    "addDate": new Date(),
+    "description": '.......',
+    "observations": '..........',
+},  
+{
+    "project_id": db.proyectos.findOne({name: 'Project 3'},{_id:3})._id,
+    "addDate": new Date(),
+    "description": '.......',
+    "observations": '..........',
+},
+{
+    "project_id": db.proyectos.findOne ({name: 'Project 4'},{_id:4})._id,
+    "addDate": new Date(),
+    "description": '.......',
+    "observations": '..........',
+}
+]);
+
+//Comandos para buscar avances
+db.getCollection('avances').find();
+
+//Comandos para consultar información almacenada en la colección
+
+db.avances.insert({"project_id":db.proyectos.findOne({name: 'Project 1'},{_id: 1})._id,
+    "addDate": new Date(),
+    "description": 'abcdefghijk',
+    "observations": 'aeiou',
+})
+
+
+//Comandos para eliminar un avance
+db.avances.deleteOne({"_id":ObjectId("61986f72768a6474a8faa3f3")})
+
+//Comandos para actualizar la descripción de los avances
+db.avances.updateOne(
+    {"_id":ObjectId("619865dd768a6474a8faa3f2")},
+    {$set:{description:"aeiou"}}
+)
